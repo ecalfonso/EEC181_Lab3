@@ -1,0 +1,8 @@
+# EEC181_Lab3
+Interface between the DE1-SoC Board and output to a VGA display
+
+lab3.v:
+Implements verilog to listen to the switches, better than a software implementation. It increments an integer every time the KEY is pressed. The software checks that integer and compares it to the previous number. If it changed, then we pressed that button. And in terms of the software, this means we pwant to go a direction.
+
+vga.c:
+Two while loops that act as turns for player 1 and player 2 respectively. It randomly generates box positions and starts the player's turns when a KEY is pressed. The loops break once the box positions match. A winner is deicded by comparing integers that act as each player's timer. The LEDs will light up accordingly afterwards. then the game can be reset with SW2
