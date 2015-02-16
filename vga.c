@@ -1,9 +1,11 @@
-// EEC181A, Lab 3, Assignment 2
+// EEC181A, Lab 3, Assignment 210
 // Eduard Alfonso
-// Kang Chen
+// Jack Chen
 // Jimmy Yu
 
 #include <stdlib.h> // For random()
+
+#define SPEED	50
 
 // Function to send a string of text to the VGA monitor
 void VGA_text(int x, int y, char * text_ptr) {
@@ -49,8 +51,10 @@ void VGA_box(int x1, int y1, int x2, int y2, short pixel_color) {
 // Call this to sleep for sec seconds
 void sleep(int sec) {
 	int i = 0;
-	for (i = 0; i <= sec * 2500000/2; i++) {}
+	for (i = 0; i <= sec * 2500000/SPEED; i++) {}
 }
+
+void draw_pause(void
 
 int main(void)
 {
@@ -60,9 +64,9 @@ int main(void)
 		volatile int * hexp2	= (int * ) 0xFF200050; // HEX5_HEX4_HEX3
 		volatile int * leds		= (int * ) 0xFF200040; // LEDR
 		volatile int * right	= (int * ) 0xFF200030; // KEY0
-		volatile int * down		= (int * ) 0xFF200020; // KEY1
+		volatile int * down		= (int * ) 0xFF200000; // KEY1
 		volatile int * up		= (int * ) 0xFF200010; // KEY2
-		volatile int * left		= (int * ) 0xFF200000; // KEY3		
+		volatile int * left		= (int * ) 0xFF200020; // KEY3		
 	
 		// Zero buffers
 		*((short *) 0xC0000000) = 0;
@@ -82,7 +86,10 @@ int main(void)
 		
 		char title_tie[13] = "Tie game!\0";
 		
-		char blank[50] = "                           \0";
+		char blank[30] = "                           \0";
+		
+		//done flag
+		int done =0;
 		
 		// Int variables
 		int FSM = 0;
@@ -106,6 +113,7 @@ int main(void)
 		int p1_time;
 		int p2_time;
 
+					
 		// Draw a pause button
 		VGA_box (0, 00, 320, 240, 0x0000);
 		sleep(1);
@@ -132,7 +140,7 @@ int main(void)
 		// Reset P1 timer
 		p1_time = 0;
 		
-		 while((box1pos_x != box2pos_x) || (box1pos_y != box2pos_y)) { // p1's turn
+		while((box1pos_x != box2pos_x) || (box1pos_y != box2pos_y)) { // p1's turn
 			// Make the background Blue
 			VGA_box (0, 00, 320, 240, 0x1878); // Display Pixel X:0 to 319, 16-bit RGB
 			// Display title
@@ -174,9 +182,10 @@ int main(void)
 			pUp = *(up);
 			pLeft = *(left);
 			sleep(1);
-			*(hexp1) = p1_time++/2;
+			*(hexp1) = p1_time++/SPEED;
 		}
 		
+
 		// Draw a pause button
 		VGA_box (0, 00, 320, 240, 0x0000);
 		sleep(1);
@@ -200,7 +209,7 @@ int main(void)
 			box2pos_y = (rand() % 24)*10;;
 		} while (box2pos_y == box1pos_y);
 		
-		// Reset P1 timer
+		
 		p2_time = 0;
 		
 		while((box1pos_x != box2pos_x) || (box1pos_y != box2pos_y)) { // p2's turn
@@ -245,6 +254,8 @@ int main(void)
 			*(hexp2) = p2_time++/2;
 		}
 		
+		
+		
 		// Draw a pause button
 		VGA_box (0, 00, 320, 240, 0x0000);
 		sleep(1);
@@ -267,6 +278,8 @@ int main(void)
 			*(leds) = 1023;
 			VGA_text(1, 3, title_tie);
 		}
+				
+
 		
 		return 0;
 }
